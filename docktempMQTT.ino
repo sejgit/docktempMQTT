@@ -13,6 +13,7 @@
  *  update SeJ 09 18 2020 take on FishtankOTA learnings
  */
 
+
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
@@ -23,7 +24,6 @@
 #include <ArduinoJson.h>
 #include <TimeLib.h>
 #include <Timezone.h>
-#include <LittleFS.h>
 
 
 /* Passwords & Ports
@@ -97,7 +97,6 @@ int mqttValue = 0;
 /*
  * temperature / humidity sensors
  */
-
 // DS18B20 one-wire for in-tank temperature
 // Data wire is plugged into pin D1 on the ESP8266 12-E - GPIO 5
 #define ONE_WIRE_BUS 5
@@ -114,7 +113,10 @@ float tempC;
 float tempF;
 float tempOld;
 
-// time
+
+/*
+ * timers
+ */
 unsigned long currentMillis = 0;
 unsigned long tempMillis = 0;
 const unsigned long tempInterval = 30000;  // minimum 10s for DS18B20
@@ -185,6 +187,7 @@ boolean initMQTT() {
         return false;
     }
 }
+
 
 /*
  * updateLocalTime
