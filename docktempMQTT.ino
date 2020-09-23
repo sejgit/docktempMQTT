@@ -476,6 +476,7 @@ void loop() {
         if(initWifi()) {
             Serial.println(F("WiFi connected."));
         }
+    }
 
         // MQTT status & init if dropped
         if(!mqttClient.connected()) {
@@ -486,7 +487,6 @@ void loop() {
         } else {
             mqttClient.loop();
         }
-    }
 
     // MQTT Heartbeat
     if(currentMillis - hbMillis > hbInterval) {
@@ -514,7 +514,6 @@ void loop() {
         Serial.print(tempC,2);
         Serial.print(F("   Temp in Fahrenheit: "));
         Serial.println(tempF,2);
-        Serial.print(F("Alarm: "));
     }
 
     // flash local led hb if any non-standard condition otherwise off
@@ -523,6 +522,12 @@ void loop() {
             ledMillis = currentMillis;
             ledState = not(ledState);
             digitalWrite(LED_BUILTIN, !ledState);
+            if(!mqttClient.connected()) {
+                Serial.println(F("MQTT connection error"));
+            }
+            if(WiFi.status() != WL_CONNECTED) {
+                Serial.println(F("WiFi connection error"));
+            }
         }
     } else {
         ledState = false;
