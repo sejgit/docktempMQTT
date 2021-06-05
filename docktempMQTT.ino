@@ -155,6 +155,8 @@ boolean initWifi(int tries = 2, int waitTime = 2) {
             delay(1000);
         }
         if (WiFi.status() == WL_CONNECTED) {
+            WiFi.setAutoReconnect(true);
+            WiFi.persistent(true);
             break;
         }
     }
@@ -473,20 +475,21 @@ void loop() {
     // Wifi status & init if dropped
     if(WiFi.status() != WL_CONNECTED) {
         Serial.println(F("Reconnecting WiFi."));
+        WiFi.disconnect();
         if(initWifi()) {
             Serial.println(F("WiFi connected."));
         }
     }
 
-        // MQTT status & init if dropped
-        if(!mqttClient.connected()) {
-            Serial.println(F("Reconnecting MQTT."));
-            if(initMQTT()) {
-                    Serial.println(F("MQTT connected."));
-            }
-        } else {
-            mqttClient.loop();
+    // MQTT status & init if dropped
+    if(!mqttClient.connected()) {
+        Serial.println(F("Reconnecting MQTT."));
+        if(initMQTT()) {
+            Serial.println(F("MQTT connected."));
         }
+    } else {
+        mqttClient.loop();
+    }
 
     // MQTT Heartbeat
     if(currentMillis - hbMillis > hbInterval) {
